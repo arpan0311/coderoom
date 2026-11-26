@@ -97,7 +97,9 @@ function main() {
   if (job.probe) {
     const available = {};
     for (const [id, l] of Object.entries(LANGS)) {
-      const r = exec(l.probe[0], l.probe[1], { cwd: tmpdir(), timeoutMs: 10_000, maxBytes: 10_000, env: process.env });
+      // /tmp when dropping privileges: the folder we were started in is root-only.
+      const cwd = DROP_PRIVILEGES ? '/tmp' : tmpdir();
+      const r = exec(l.probe[0], l.probe[1], { cwd, timeoutMs: 10_000, maxBytes: 10_000, env: process.env });
       available[id] = !r.notInstalled && !r.timedOut && r.exitCode === 0;
     }
     return print({ available });
