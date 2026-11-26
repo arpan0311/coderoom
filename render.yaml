@@ -1,0 +1,17 @@
+# Render "Blueprint": Render reads this file and creates the backend service for you.
+# Render dashboard → New → Blueprint → pick this GitHub repo.
+services:
+  - type: web
+    name: coderoom-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: ./server
+    healthCheckPath: /api/health
+    envVars:
+      - key: MONGO_URI
+        sync: false # Render asks you for it (your MongoDB Atlas URL)
+      - key: CLIENT_URL
+        sync: false # Render asks you for it (your Vercel URL, e.g. https://coderoom.vercel.app)
+      - key: JWT_SECRET
+        generateValue: true # Render makes a random secret
